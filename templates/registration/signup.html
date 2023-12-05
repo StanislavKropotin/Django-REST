@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+
+  <div class="container-small">
+    <h3>Sign up</h3>
+    <div class="form-group">
+        
+        <form method="post" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn button-green">Sign up</button>
+                      <br>
+Already a member? <a href="{% url 'login' %}" >Log in</a><br><br><br>
+        </form>
+      </div>
+</div>  
+
+{% endblock %}

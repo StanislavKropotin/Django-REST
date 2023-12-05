@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+  <div class="container">
+    <div>
+        <div>
+            <div class="sign">
+              <h3>ROOM: {{room_name}}</h3>
+            </div>
+
+            <form>
+                <div style="chat-field">
+                    {% if messages %}
+                      <div  id="chatbox" style="padding: 4px 2px;max-height: 300px; overflow-y: scroll">
+                         {% for message in messages %}
+                            <div class="chat-message {% if message.user == request.user %}text-right{% else %}text-left{% endif %}">
+                              <b><img src="../media/{{message.user.image}}" alt="image"> {{ message.user.username }} </b> : {{ message.content }}<br>
+                            </div>
+                         {% endfor %}
+                      </div>
+
+                    <div class="sign">
+                    {% else %}
+                          <div id="chatbox" ></div>
+                          <h4>No Messages in this Room.</h4>
+
+                    {% endif %}
+                    </div>
+                </div>
+
+            <br/>
+
+            <div class="form-group">
+                <input class="textarea" placeholder="Enter text here" id="my_input" type="text" required></br>
+            </div>
+
+            <br/>
+
+            <div class="button-right">
+                <input class="btn button-green" id="submit_button" type="button" value="Send">
+            </div>
+
+            <br>
+
+            <a href="/"><button type="button" class="btn button-green">Home</button></a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+
+<hr>
+
+<div class="container">
+    <div class="sign">
+        <h3>{{room_name}} participants</h3>
+    </div>
+
+    {% if users %}
+        <table style="table">
+            {% for user in users %}
+                {% if not user == request.user %}
+                    <tr>
+                        <td>
+                            </h6>
+                                <p><b><img src="../media/{{user.image}}" alt="image" > {{ user.username }} </b></p>
+                                <h6 style="text-align: justify">
+                            </h6>
+                        </td>
+                    </tr>
+
+                {% endif %}
+            {% endfor %}
+        </table>
+
+    {% else %}
+        <h3>No users. May appear soon!</h3>
+
+    {% endif %}
+
+    </div>
+</div>
+
+
+{{slug|json_script:"room_slug"}}
+<script>
+
+const chatbox = document.querySelector("#chatbox");
+
+  // Function to scroll to the bottom of the chatbox
+  function scrollToBottom() {
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  // Scroll to bottom when the page is loaded
+  scrollToBottom();
+
+
+    const roomName= JSON.parse(document.getElementById('room_slug').textContent);
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/"+ roomName +"/");
+    // const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/"+ roomName +"/");
+    // alert(chatSocket);
+    chatSocket.onopen = function (e) {
+      console.log("The connection was setup successfully !");
+    };
+    chatSocket.onclose = function (e) {
+      console.log("Something unexpected happened !");
+    };
+
+    document.querySelector("#my_input").focus();
+    document.querySelector("#my_input").onkeyup = function (e) {
+      if (e.keyCode == 13) {
+        e.preventDefault();
+        document.querySelector("#submit_button").click();
+      }
+    };
+    document.querySelector("#submit_button").onclick = function (e) {
+      var messageInput = document.querySelector(
+        "#my_input"
+      ).value;
+
+      if(messageInput.length == 0)
+        {
+            alert("Add some Input First Or Press Send Button!")
+        }
+        else
+        {
+          chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.username}}",room_name:"{{room_name}}"}));
+
+
+        }
+
+    };
+
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      var div = document.createElement("div");
+      div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
+
+      // Add class based on user authentication
+      if (data.username === "{{ request.user.username }}") {
+        div.classList.add("chat-message", "text-right");
+      } else {
+        div.classList.add("chat-message", "text-left");
+      }
+
+      document.querySelector("#my_input").value = "";
+      document.querySelector("#chatbox").appendChild(div);
+      scrollToBottom();
+    };
+  </script>
+
+
+
+{% else %}
+<div class="container">
+    <div>
+        <h3>You are not logged in</h3>
+        <a href="/accounts/logout/">
+          <button type="button" class="btn button-green"><a href="{% url 'login' %}">Log In</a></button>
+        </a>
+      </div>
+</div>  
+{% endif %}
+
+<br/>
+
+
+{% endblock %}

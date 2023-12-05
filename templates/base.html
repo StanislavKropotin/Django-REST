@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}Chatapp{% endblock %}</title>
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="header">
+        {% block header%}
+          <div class="welcome-sign">
+            Hi <b>{{ user.username }}</b>, Welcome to Chatapp
+          </div>
+
+          <div class="button-right">
+            <a href="/accounts/logout/">
+              <button type="button" class="btn">Log Out</button>
+
+            <a href="/accounts/update/">
+              <button type="button" class="btn">Update your profile</button>
+
+            </a>
+          </div>
+        {% endblock %}
+
+      </div>
+    </div>
+    <br/>
+      
+
+
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+
+
+
+  </body>
+</html>
