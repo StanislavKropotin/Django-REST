@@ -1,21 +1,21 @@
-Pet - проект на Django REST framework.
+Pet is a project based on the Django REST framework.
 
-Это небольшой месенджер со следующими функциями:
+This is a small messenger with the following functions:
 
-• отправка и получение сообщений;
+• sending and receiving messages;
 
-• создание, редактирование и удаление групповых чатов и переписка в них (Управление чатами происходит через REST API, а переписка так же, как в обычных чатах, но с использованием на сервере идеологии «комнат»);
+• creating, editing and deleting group chats and correspondence in them (Chats are managed via the REST API, and correspondence is the same as in regular chats, but using the “rooms” ideology on the server);
 
-• редактирование личной информации пользователя (имя и аватар);
+• editing the user's personal information (name and avatar);
 
-• просмотр списка других пользователей с переходом на отправку им сообщений.
+• viewing a list of other users and switching to sending them messages.
 
-Что сделать, чтобы работало(БД чистая):
+What to do to make it work (the database is clean):
 
-1) Необходимо установить зависимости (pip install -r requirements.txt)
+1) You need to install dependencies (pip install -r requirements.txt)
    
-2) Выполнить команду python manage.py runserver
+2) Run the command python manage.py runserver
    
-3) Перейти по ссылке http://127.0.0.1:8000/
+3) Follow the link http://127.0.0.1:8000/
    
-4) Чат румы можно создавать через админ-панель
+4) Chat rooms can be created through the admin panel
